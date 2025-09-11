@@ -25,7 +25,7 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.DEPLOYER_SA_EMAIL }}
 
-      - uses: google-github-actions/setup-gcloud@v2
+      - uses: google-github-actions/setup-gcloud@v3
 
       - name: Configure Docker auth for Artifact Registry
         run: gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev -q
