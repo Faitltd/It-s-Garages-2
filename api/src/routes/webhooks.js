@@ -1,7 +1,7 @@
 import express from 'express'
 import Stripe from 'stripe'
 import { db } from '../services/firestore.js'
-import { sendTransactional } from '../services/sendgrid.js'
+import { sendTransactional } from '../services/email.js'
 
 const router = express.Router()
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)

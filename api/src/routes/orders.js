@@ -2,7 +2,7 @@ import express from 'express'
 import { db } from '../services/firestore.js'
 import { createCheckoutSession } from '../services/stripe.js'
 import { validateAddress } from '../services/addressValidation.js'
-import { sendTransactional } from '../services/sendgrid.js'
+import { sendTransactional } from '../services/email.js'
 
 const router = express.Router()
 

@@ -14,7 +14,7 @@ await jest.unstable_mockModule('../src/services/firestore.js', () => ({
 
 // SendGrid mock
 const mockSend = jest.fn(async () => {})
-await jest.unstable_mockModule('../src/services/sendgrid.js', () => ({
+await jest.unstable_mockModule('../src/services/email.js', () => ({
   sendTransactional: mockSend
 }))
 

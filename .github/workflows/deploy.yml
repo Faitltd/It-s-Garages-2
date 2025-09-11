@@ -53,11 +53,25 @@ jobs:
             --memory=512Mi \
             --concurrency=80 \
             --set-env-vars GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }},PHOTO_RETENTION_DAYS=30 \
-            --set-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,SENDGRID_API_KEY=SENDGRID_API_KEY:latest,ADDRESS_VALIDATION_API_KEY=ADDRESS_VALIDATION_API_KEY:latest \
+            --set-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,ADDRESS_VALIDATION_API_KEY=ADDRESS_VALIDATION_API_KEY:latest,AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID:latest,AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY:latest,SES_REGION=SES_REGION:latest,SES_FROM_EMAIL=SES_FROM_EMAIL:latest \
             --quiet
           REV=$(gcloud run revisions list --service=$SERVICE_NAME --region=$GCP_REGION --format='value(METADATA.name)' --limit=1)
           gcloud run services update-traffic $SERVICE_NAME --region=$GCP_REGION --to-revisions $REV=10,latest=90
 
-      - name: Post-deploy note
-        run: echo "Smoke test then promote canary to 100% when ready."
+      - name: Smoke test and promote canary
+        run: |
+          SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --region $GCP_REGION --format='value(status.url)')
+          echo "Service URL: $SERVICE_URL"
+          ok=0
+          for i in {1..12}; do
+            if curl -fsS "$SERVICE_URL/healthz"; then ok=1; break; fi
+            echo "Health check attempt $i failed; retrying in 5s..."; sleep 5
+          done
+          if [ "$ok" -eq 1 ]; then
+            echo "Smoke test passed. Promoting latest to 100%."
+            gcloud run services update-traffic $SERVICE_NAME --region=$GCP_REGION --to-latest
+          else
+            echo "Smoke test failed; keeping canary at 10%." >&2
+            exit 1
+          fi
 
