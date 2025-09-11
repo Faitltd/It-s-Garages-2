@@ -76,6 +76,10 @@ resource "google_cloud_run_service" "api" {
 }
 
 resource "google_secret_manager_secret" "stripe" { secret_id = "STRIPE_SECRET_KEY" replication { automatic = true } }
-resource "google_secret_manager_secret" "sendgrid" { secret_id = "SENDGRID_API_KEY" replication { automatic = true } }
 resource "google_secret_manager_secret" "addrval" { secret_id = "ADDRESS_VALIDATION_API_KEY" replication { automatic = true } }
+# Amazon SES / AWS creds (replaces SendGrid)
+resource "google_secret_manager_secret" "aws_access_key_id" { secret_id = "AWS_ACCESS_KEY_ID" replication { automatic = true } }
+resource "google_secret_manager_secret" "aws_secret_access_key" { secret_id = "AWS_SECRET_ACCESS_KEY" replication { automatic = true } }
+resource "google_secret_manager_secret" "ses_region" { secret_id = "SES_REGION" replication { automatic = true } }
+resource "google_secret_manager_secret" "ses_from_email" { secret_id = "SES_FROM_EMAIL" replication { automatic = true } }
 

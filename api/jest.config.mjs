@@ -1,7 +1,6 @@
 export default {
   testEnvironment: 'node',
   transform: {},
-  extensionsToTreatAsEsm: ['.js'],
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.js', '!src/index.js', '!src/services/**'],
   coverageReporters: ['text-summary', 'lcov'],

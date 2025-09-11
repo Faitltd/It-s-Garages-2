@@ -6,7 +6,8 @@ process.env.STRIPE_SECRET_KEY = 'sk_test'
 
 // Firestore mock
 const mockUpdate = jest.fn(async () => {})
-const mockDoc = jest.fn(() => ({ update: mockUpdate, get: jest.fn(async () => ({ data: () => ({ email: 'u@example.com' }) })) }))
+const mockGet = jest.fn(async () => ({ data: () => ({ email: 'u@example.com' }) }))
+const mockDoc = jest.fn(() => ({ update: mockUpdate, get: mockGet }))
 const mockCollection = jest.fn(() => ({ doc: mockDoc }))
 await jest.unstable_mockModule('../src/services/firestore.js', () => ({
   db: { collection: mockCollection }
@@ -20,12 +21,14 @@ await jest.unstable_mockModule('../src/services/email.js', () => ({
 
 // Stripe mock
 const eventObj = { type: 'checkout.session.completed', data: { object: { metadata: { orderId: 'order123' } } } }
-class MockStripe { constructor(){ this.webhooks = { constructEvent: jest.fn(() => eventObj) } } }
+class MockStripe {}
+MockStripe.prototype.webhooks = { constructEvent: jest.fn(() => eventObj) }
 await jest.unstable_mockModule('stripe', () => ({ default: MockStripe }))
 
 const { default: app } = await import('../src/index.js')
 
 describe('Stripe Webhook', () => {
+  beforeEach(() => { jest.clearAllMocks() })
   it('handles checkout.session.completed and updates order', async () => {
     const payload = Buffer.from(JSON.stringify({ any: 'payload' }))
     await request(app)
@@ -49,6 +52,47 @@ describe('Stripe Webhook', () => {
       .set('stripe-signature', 'bad')
       .send(payload)
       .expect(400)
+  })
+
+  it('ignores non-checkout events', async () => {
+    const { default: StripeDefault } = await import('stripe')
+    StripeDefault.prototype.webhooks.constructEvent.mockImplementationOnce(() => ({ type: 'ping', data: { object: {} } }))
+    const payload = Buffer.from(JSON.stringify({ any: 'payload' }))
+    await request(app)
+      .post('/webhooks/stripe')
+      .set('Content-Type', 'application/json')
+      .set('stripe-signature', 't=123,v1=abc')
+      .send(payload)
+      .expect(200)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('does not update when orderId metadata is missing', async () => {
+    const { default: StripeDefault } = await import('stripe')
+    StripeDefault.prototype.webhooks.constructEvent.mockImplementationOnce(() => ({ type: 'checkout.session.completed', data: { object: {} } }))
+    const payload = Buffer.from(JSON.stringify({ any: 'payload' }))
+    await request(app)
+      .post('/webhooks/stripe')
+      .set('Content-Type', 'application/json')
+      .set('stripe-signature', 't=123,v1=abc')
+      .send(payload)
+      .expect(200)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('does not send email when order has no email', async () => {
+    // Next call: valid completed event but missing email in doc
+    const { default: StripeDefault } = await import('stripe')
+    StripeDefault.prototype.webhooks.constructEvent.mockImplementationOnce(() => ({ type: 'checkout.session.completed', data: { object: { metadata: { orderId: 'order123' } } } }))
+    mockGet.mockResolvedValueOnce({ data: () => ({}) })
+    const payload = Buffer.from(JSON.stringify({ any: 'payload' }))
+    await request(app)
+      .post('/webhooks/stripe')
+      .set('Content-Type', 'application/json')
+      .set('stripe-signature', 't=123,v1=abc')
+      .send(payload)
+      .expect(200)
+    expect(mockSend).not.toHaveBeenCalled()
   })
 })
 

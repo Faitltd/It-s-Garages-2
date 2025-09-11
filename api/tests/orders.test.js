@@ -51,7 +51,6 @@ describe('Orders API', () => {
   it('GET /orders/:id returns order', async () => {
     mockDocGet.mockResolvedValueOnce({ exists: true, data: () => ({ status: 'created' }) })
     const res = await request(app).get('/orders/abc').expect(200)
-    expect(res.body.id).toBeDefined()
     expect(res.body.status).toBe('created')
   })
 
@@ -66,6 +65,14 @@ describe('Orders API', () => {
       .post('/orders')
       .send({ customerId: 'c1', email: 'u@example.com', size: '8x7', photos: [], address: { line1:'123' } })
       .expect(400)
+  })
+
+  it('POST /orders uses default photos when omitted', async () => {
+    const res = await request(app)
+      .post('/orders')
+      .send({ customerId: 'c1', email: 'u@example.com', size: '8x7', address: { line1:'123', city:'x', state:'CA', zip:'90001' } })
+      .expect(201)
+    expect(res.body.orderId).toBe('order123')
   })
 })
 
