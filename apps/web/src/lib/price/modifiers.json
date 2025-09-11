@@ -1,0 +1,8 @@
+{
+  "matrix_version": "2025-09-01",
+  "urgency": { "standard": 1.0, "same_day": 1.25, "after_hours": 1.5 },
+  "difficulty": { "none": 1.0, "low_headroom": 1.1, "tight_space": 1.2 },
+  "tiers": { "good": 1.0, "better": 1.1, "best": 1.25 },
+  "travel": { "base_zip_surcharge": 0 }
+}
+

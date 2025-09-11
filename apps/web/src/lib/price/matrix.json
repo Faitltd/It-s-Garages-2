@@ -1,0 +1,25 @@
+{
+  "matrix_version": "2025-09-01",
+  "base": {
+    "install-door": {
+      "single": { "steel-non-insulated": 90000, "steel-insulated-r8": 120000 },
+      "double": { "steel-non-insulated": 140000, "steel-insulated-r8": 180000 }
+    },
+    "install-opener": {
+      "chain": 35000,
+      "belt-quiet": 55000
+    },
+    "repair": {
+      "springsPair": 28000,
+      "rollersSet": 12000,
+      "haulAway": 5000
+    },
+    "maintenance": { "base": 9900 }
+  },
+  "addons": {
+    "windows": 20000,
+    "smartAddon": 15000,
+    "keypad": 8000
+  }
+}
+

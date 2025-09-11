@@ -1,0 +1,62 @@
+{
+	"/": [
+		"src/routes/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/api/availability": [
+		"src/routes/api/availability/+server.ts"
+	],
+	"/api/bookings": [
+		"src/routes/api/bookings/+server.ts"
+	],
+	"/api/checkout": [
+		"src/routes/api/checkout/+server.ts"
+	],
+	"/api/estimate": [
+		"src/routes/api/estimate/+server.ts"
+	],
+	"/api/health": [
+		"src/routes/api/health/+server.ts"
+	],
+	"/api/leads": [
+		"src/routes/api/leads/+server.ts"
+	],
+	"/api/webhooks/cal": [
+		"src/routes/api/webhooks/cal/+server.ts"
+	],
+	"/api/webhooks/stripe": [
+		"src/routes/api/webhooks/stripe/+server.ts"
+	],
+	"/apply": [
+		"src/routes/+layout.server.ts"
+	],
+	"/book": [
+		"src/routes/book/+page.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/legal/privacy": [
+		"src/routes/+layout.server.ts"
+	],
+	"/legal/terms": [
+		"src/routes/+layout.server.ts"
+	],
+	"/legal/warranty": [
+		"src/routes/+layout.server.ts"
+	],
+	"/pricing": [
+		"src/routes/pricing/+page.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/services/install-door": [
+		"src/routes/+layout.server.ts"
+	],
+	"/services/install-opener": [
+		"src/routes/+layout.server.ts"
+	],
+	"/services/repair": [
+		"src/routes/+layout.server.ts"
+	],
+	"/services/[slug]": [
+		"src/routes/+layout.server.ts"
+	]
+}

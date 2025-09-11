@@ -1,0 +1,23 @@
+---
+title: Terms of Service
+---
+
+By using It’s Garages, you agree to these terms.
+
+## Services
+We provide garage door installation, opener installation, repairs, and maintenance. Schedules are estimates and subject to availability.
+
+## Pricing and payments
+Prices shown during estimating are estimates; final pricing may vary based on onsite conditions. Deposits processed via Stripe are applied to the final invoice.
+
+## Cancellations
+Please notify us at least 24 hours in advance to avoid fees. Some bookings may require a non-refundable deposit.
+
+## Warranty
+We stand by our workmanship; see Warranty for details.
+
+## Limitation of liability
+To the maximum extent permitted by law, our liability is limited to amounts paid for the service.
+
+Effective date: {new Date().toISOString().slice(0,10)}
+

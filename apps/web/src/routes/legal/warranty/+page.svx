@@ -1,0 +1,15 @@
+---
+title: Warranty Information
+---
+
+## Workmanship warranty
+Our workmanship is warranted for 12 months from service completion. If issues arise due to workmanship, we will repair at no additional charge.
+
+## Parts warranty
+Manufacturer warranties apply to parts. We can assist with claims where applicable.
+
+## Exclusions
+Normal wear and tear, misuse, accidents, and third-party modifications are not covered.
+
+Effective date: {new Date().toISOString().slice(0,10)}
+

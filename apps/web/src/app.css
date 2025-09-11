@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light dark; }
+
+
+:root{
+  --ig-purple:#7c3aed; /* purple-600 */
+  --ig-teal:#14b8a6;   /* teal-500 */
+  --ig-ink:#111111;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'Press Start 2P', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  image-rendering: pixelated;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, var(--ig-purple), var(--ig-teal));
+  color: #0a0a0a;
+}
+
+/***** 8-bit helpers *****/
+.pixel-card {
+  background: rgba(255,255,255,0.92);
+  border: 4px solid var(--ig-ink);
+  box-shadow:
+    0 6px 0 0 var(--ig-ink),
+    0 8px 0 0 rgba(0,0,0,0.2);
+  border-radius: 0;
+}
+.pixel-card.dark {
+  background: rgba(0,0,0,0.75);
+  color: white;
+}
+
+.pixel-btn {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(90deg, var(--ig-purple), var(--ig-teal));
+  color: white;
+  border: 4px solid var(--ig-ink);
+  box-shadow: 0 6px 0 0 var(--ig-ink);
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.pixel-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 0 var(--ig-ink); }
+.pixel-btn-outline {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border: 4px solid var(--ig-ink);
+  background: white;
+}
+
+/***** Mario-like coin animation *****/
+@keyframes coin-spin { 0%{ transform: scaleX(1);} 50%{ transform: scaleX(0.15);} 100%{ transform: scaleX(1);} }
+@keyframes coin-bounce { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-10px);} }
+.coin {
+  width: 24px; height: 24px;
+  background: #fbbf24; /* amber-400 */
+  border: 4px solid var(--ig-ink);
+  border-radius: 4px;
+  animation: coin-spin 1s infinite linear, coin-bounce 1s infinite ease-in-out;
+}
+
+/***** Sky stripe for hero *****/
+.pixel-sky {
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.15) 0 6px, transparent 6px 12px),
+    linear-gradient(135deg, var(--ig-purple), var(--ig-teal));
+}

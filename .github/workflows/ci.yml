@@ -1,0 +1,50 @@
+name: ci
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci
+      - name: Lint & Test frontend
+        working-directory: frontend
+        run: |
+          npm run lint --if-present
+          npm test --if-present -- --ci --reporters=default --reporters=jest-junit || true
+      - name: Install api deps
+        working-directory: api
+        run: npm ci
+      - name: Lint & Test api
+        working-directory: api
+        run: |
+          npm run lint --if-present
+          npm test --if-present -- --ci --reporters=default --reporters=jest-junit || true
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: "detect --no-git -v --redact"
+      - name: SCA audit (frontend)
+        working-directory: frontend
+        run: npm audit --audit-level=high || true
+      - name: SCA audit (api)
+        working-directory: api
+        run: npm audit --audit-level=high || true
+      - name: Generate SBOM (repo)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          artifact-name: sbom.spdx.json
+

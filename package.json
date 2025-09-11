@@ -1,0 +1,16 @@
+{
+  "name": "It-s-Garages-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm --workspaces run build",
+    "dev": "npm --workspaces run dev",
+    "lint": "npm --workspaces run lint",
+    "test": "npm --workspaces run test"
+  },
+  "overrides": {
+    "@sveltejs/vite-plugin-svelte": "3.1.2"
+  }
+}

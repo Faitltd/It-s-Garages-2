@@ -1,0 +1,29 @@
+{
+  "name": "its-garages-api",
+  "private": true,
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "lint": "echo 'No linter configured yet'",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage --runInBand",
+    "test:unit": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage --runInBand --testPathPattern=tests/.*.test.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.5.0",
+    "stripe": "^14.23.0",
+    "@sendgrid/mail": "^8.1.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "supertest": "^7.0.0"
+  }
+}
+

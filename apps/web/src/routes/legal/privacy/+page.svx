@@ -1,0 +1,26 @@
+---
+title: Privacy Policy
+---
+
+We respect your privacy. This policy explains what we collect and how we use it.
+
+## Information we collect
+- Contact details you provide (name, email, phone, address)
+- Booking and estimate details
+- Technical logs necessary to operate the service
+
+## How we use information
+- Provide estimates, schedule service, process payments, and communicate updates
+- Improve reliability and safety of the service
+
+## Sharing
+We do not sell personal data. We share data only with service providers necessary to operate (e.g., payment processors, email/SMS providers) under contractual obligations.
+
+## Security and retention
+We apply reasonable technical and organizational safeguards. Data is retained only as long as needed to provide services and meet legal obligations.
+
+## Your choices
+Contact us to access or delete your data where applicable.
+
+Effective date: {new Date().toISOString().slice(0,10)}
+
