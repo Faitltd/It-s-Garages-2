@@ -1,0 +1,63 @@
+name: deploy
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: us-central1
+  AR_REPO: ${{ secrets.AR_REPO }} # e.g., us-central1-docker.pkg.dev/PROJECT/REPO
+  SERVICE_NAME: api
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Authenticate to Google Cloud via OIDC (no static keys)
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.DEPLOYER_SA_EMAIL }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker auth for Artifact Registry
+        run: gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev -q
+
+      - name: Build API image (lean) and push
+        working-directory: api
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          IMAGE_TAG=${AR_REPO}/${SERVICE_NAME}:${{ github.sha }}
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
+
+      - name: Deploy to Cloud Run with canary (10%)
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --image "$IMAGE_TAG" \
+            --region "$GCP_REGION" \
+            --platform managed \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=5 \
+            --cpu=1 \
+            --memory=512Mi \
+            --concurrency=80 \
+            --set-env-vars GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }},PHOTO_RETENTION_DAYS=30 \
+            --set-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,SENDGRID_API_KEY=SENDGRID_API_KEY:latest,ADDRESS_VALIDATION_API_KEY=ADDRESS_VALIDATION_API_KEY:latest \
+            --quiet
+          REV=$(gcloud run revisions list --service=$SERVICE_NAME --region=$GCP_REGION --format='value(METADATA.name)' --limit=1)
+          gcloud run services update-traffic $SERVICE_NAME --region=$GCP_REGION --to-revisions $REV=10,latest=90
+
+      - name: Post-deploy note
+        run: echo "Smoke test then promote canary to 100% when ready."
+
