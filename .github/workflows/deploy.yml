@@ -19,6 +19,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
+      - name: Validate required secrets
+        env:
+          S_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          S_DEPLOYER_SA_EMAIL: ${{ secrets.DEPLOYER_SA_EMAIL }}
+          S_GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          S_AR_REPO: ${{ secrets.AR_REPO }}
+        run: |
+          missing=()
+          [ -n "$S_WORKLOAD_IDENTITY_PROVIDER" ] || missing+=("WORKLOAD_IDENTITY_PROVIDER")
+          [ -n "$S_DEPLOYER_SA_EMAIL" ] || missing+=("DEPLOYER_SA_EMAIL")
+          [ -n "$S_GCP_PROJECT_ID" ] || missing+=("GCP_PROJECT_ID")
+          [ -n "$S_AR_REPO" ] || missing+=("AR_REPO")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "Missing required repo secrets: ${missing[*]}" >&2
+            echo "Please add these in GitHub -> Settings -> Secrets and variables -> Actions (Repository secrets)." >&2
+            exit 1
+          fi
+
       # Authenticate to Google Cloud via OIDC (no static keys)
       - uses: google-github-actions/auth@v2
         with:
