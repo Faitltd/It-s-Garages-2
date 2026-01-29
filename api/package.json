@@ -16,7 +16,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "firebase-admin": "^12.5.0",
-    "stripe": "^14.23.0",
+    "stripe": "^20.3.0",
     "@sendgrid/mail": "^8.1.0"
   },
   "devDependencies": {
